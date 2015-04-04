@@ -1,0 +1,16 @@
+{
+  "name": "jimlei/formhandler",
+  "description": "...",
+  "homepage": "https://github.com/jimlei/formhandler",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Jim Leirvik",
+      "email": "jim.leirvik@gmail.com"
+    }
+  ],
+  "require": {},
+  "autoload": {
+    "psr-4": { "Jimlei\\FormHandler\\": "" }
+  }
+}

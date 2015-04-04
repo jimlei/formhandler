@@ -1,150 +1,8 @@
 <?php
-// just to get our dumps looking good
-echo'<pre>';
 
-/**
- * Maps a request to usable data.
- */
-class Request
-{
-    /**
-     * @var string
-     */
-    private $method;
+namespace Jimlei\FormHandler;
 
-    /**
-     * @var mixed
-     */
-    private $data;
-
-    /**
-     * @var mixed
-     */
-    private $query;
-
-    // etc
-
-    /**
-     * Should convert global data and other input to be usable in the request object
-     */
-    public function __construct()
-    {
-        // mock of json_decode(file_get_contents('php://input'))
-        $this->data = json_decode('{"name": "jimlei", "email": "jim.leirvik@gmail.com"}');
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getData()
-    {
-        return $this->data;
-    }
-}
-
-/**
- * Abstract class Entity
- */
-abstract class Entity {}
-
-/**
- * User Entity
- * The actual object that is persisted to storage
- */
-class User extends Entity
-{
-    /**
-     * @var int
-     */
-    private $id;
-
-    /**
-     * @var string
-     */
-    private $name;
-
-    /**
-     * @var string
-     */
-    private $email;
-
-    /**
-     * @var int
-     */
-    private $age;
-
-    /**
-     * @return int
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * @param int $id
-     * @return User
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    /**
-     * @param string $name
-     * @return User
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getEmail()
-    {
-        return $this->email;
-    }
-
-    /**
-     * @param string $email
-     * @return User
-     */
-    public function setEmail($email)
-    {
-        $this->email = $email;
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getAge()
-    {
-        return $this->age;
-    }
-
-    /**
-     * @param int $age
-     * @return User
-     */
-    public function setAge($age)
-    {
-        $this->age = $age;
-        return $this;
-    }
-}
+use Jimlei\FormHandler\RequestInterface;
 
 /**
  * Form handler class that maps a request to an entity if the fields are valid
@@ -197,7 +55,7 @@ class User extends Entity
 abstract class Form
 {
     /**
-     * @var Entity
+     * @var
      */
     private $entity;
 
@@ -217,10 +75,10 @@ abstract class Form
     private $fields;
 
     /**
-     * @param Entity $entity
+     * @param mixed $entity
      * @param array  $fields
      */
-    public function __construct(Entity $entity, $fields)
+    public function __construct($entity, $fields)
     {
         $this->data = array();
         $this->entity = $entity;
@@ -237,9 +95,9 @@ abstract class Form
     }
 
     /**
-     * @param Request $request
+     * @param RequestInterface $request
      */
-    public function handleRequest(Request $request)
+    public function handleRequest(RequestInterface $request)
     {
         // get form data from request
         foreach($request->getData() as $submittedField => $submittedValue)
@@ -378,56 +236,3 @@ abstract class Form
         return true;
     }
 }
-
-/**
- * Class UserForm
- * Validates and maps a request to an entity
- */
-class UserForm extends Form
-{
-    /**
-     * @param User $user
-     */
-    public function __construct(User $user)
-    {
-        $fields = array(
-            'name' => array(
-                'type' => 'string',
-                'maxLength' => '255',
-                'required' => true
-            ),
-            'email' => array(
-                'type' => 'email',
-                'maxLength' => '255',
-                'required' => true
-            ),
-            'age' => array(
-                'type' => 'int'
-            )
-        );
-
-        parent::__construct($user, $fields);
-    }
-}
-
-// controller
-$request = new Request();
-
-$user = new User();
-
-$form = new UserForm($user);
-$form->handleRequest($request);
-
-if ($form->isValid())
-{
-    // here you would probably save the user
-    var_dump('Form IS valid :D');
-}
-else
-{
-    var_dump('Form is NOT valid :(');
-}
-
-print_r($user);
-print_r('Errors ');
-print_r($form->getErrors());
