@@ -15,5 +15,8 @@
   },
   "autoload": {
     "psr-4": { "Jimlei\\FormHandler\\": "src/" }
+  },
+  "autoload-dev": {
+    "psr-4": { "Jimlei\\FormHandler\\Tests\\": "tests/" }
   }
 }
