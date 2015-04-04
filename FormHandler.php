@@ -1,4 +1,4 @@
-<?php
+l<?php
 // just to get our dumps looking good
 echo'<pre>';
 
@@ -30,7 +30,7 @@ class Request
     public function __construct()
     {
         // mock of json_decode(file_get_contents('php://input'))
-        $this->data = json_decode('{"name": "ph8", "email": "foo@bar.com"}');
+        $this->data = json_decode('{"name": "jimlei", "email": "jim.leirvik@gmail.com"}');
     }
 
     /**
