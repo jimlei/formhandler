@@ -1,10 +1,10 @@
 ### INSTALLATION INSTRUCTIONS
 #### Pre-alpha
 
-Include Formhandler
+Include the Formhandler
 
 ```
-composer require jimlei/formhandler
+composer require jimlei/formhandler:dev-master
 ```
 
 Create an object/entity that will be modified by a form (request)
