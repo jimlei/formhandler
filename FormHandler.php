@@ -1,4 +1,4 @@
-l<?php
+<?php
 // just to get our dumps looking good
 echo'<pre>';
 
