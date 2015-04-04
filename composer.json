@@ -11,6 +11,6 @@
   ],
   "require": {},
   "autoload": {
-    "psr-4": { "Jimlei\\FormHandler\\": "" }
+    "psr-4": { "Jimlei\\FormHandler\\": "src/" }
   }
 }
