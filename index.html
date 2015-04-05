@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>Formhandler by jimlei</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">Formhandler</h1>
+      <h2 class="project-tagline"></h2>
+      <a href="https://github.com/jimlei/formhandler" class="btn">View on GitHub</a>
+      <a href="https://github.com/jimlei/formhandler/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/jimlei/formhandler/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <h2>
+<a id="installation-instructions" class="anchor" href="#installation-instructions" aria-hidden="true"><span class="octicon octicon-link"></span></a>INSTALLATION INSTRUCTIONS</h2>
+
+<p>Include with composer</p>
+
+<pre><code>composer require jimlei/formhandler:dev-master
+</code></pre>
+
+<p>Create the object/entity that will be modified by the form (request)</p>
+
+<div class="highlight highlight-php"><pre><span class="pl-s1"><span class="pl-k">&lt;</span>?<span class="pl-c1">php</span> <span class="pl-c">// src/Entity/Article.php</span></span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-k">namespace</span> <span class="pl-en">Acme\Entity</span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-k">class</span> <span class="pl-en">Article</span></span>
+<span class="pl-s1">{</span>
+<span class="pl-s1">    <span class="pl-k">private</span> <span class="pl-smi">$id</span>;</span>
+<span class="pl-s1">    <span class="pl-k">private</span> <span class="pl-smi">$title</span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-k">public</span> <span class="pl-k">function</span> <span class="pl-en">getId</span>()</span>
+<span class="pl-s1">    {</span>
+<span class="pl-s1">        <span class="pl-k">return</span> <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">id</span>;</span>
+<span class="pl-s1">    }</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-k">public</span> <span class="pl-k">function</span> <span class="pl-en">setId</span>(<span class="pl-smi">$id</span>)</span>
+<span class="pl-s1">    {</span>
+<span class="pl-s1">        <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">id</span> <span class="pl-k">=</span> <span class="pl-smi">$id</span>;</span>
+<span class="pl-s1">        <span class="pl-k">return</span> <span class="pl-smi">$this</span>;</span>
+<span class="pl-s1">    }</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-k">public</span> <span class="pl-k">function</span> <span class="pl-en">getTitle</span>()</span>
+<span class="pl-s1">    {</span>
+<span class="pl-s1">        <span class="pl-k">return</span> <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">title</span>;</span>
+<span class="pl-s1">    }</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-k">public</span> <span class="pl-k">function</span> <span class="pl-en">setTitle</span>(<span class="pl-smi">$title</span>)</span>
+<span class="pl-s1">    {</span>
+<span class="pl-s1">        <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">title</span> <span class="pl-k">=</span> <span class="pl-smi">$title</span>;</span>
+<span class="pl-s1">        <span class="pl-k">return</span> <span class="pl-smi">$this</span>;</span>
+<span class="pl-s1">    }</span>
+<span class="pl-s1">}</span></pre></div>
+
+<p>Create the form that will map/validate the data in the request</p>
+
+<div class="highlight highlight-php"><pre><span class="pl-s1"><span class="pl-k">&lt;</span>?<span class="pl-c1">php</span> <span class="pl-c">// src/Form/ArticleForm.php</span></span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-k">namespace</span> <span class="pl-en">Acme\Form</span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">Acme\Entity\Article</span>;</span>
+<span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">Jimlei\FormHandler\Form</span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-k">class</span> <span class="pl-en">ArticleForm</span> <span class="pl-k">extends</span> <span class="pl-e">Form</span></span>
+<span class="pl-s1">{</span>
+<span class="pl-s1">    <span class="pl-k">public</span> <span class="pl-k">function</span> <span class="pl-c1">__construct</span>(<span class="pl-c1">Article</span> <span class="pl-smi">$article</span>)</span>
+<span class="pl-s1">    {</span>
+<span class="pl-s1">        <span class="pl-smi">$fields</span> <span class="pl-k">=</span> <span class="pl-c1">array</span>(</span>
+<span class="pl-s1">            <span class="pl-s"><span class="pl-pds">'</span>title<span class="pl-pds">'</span></span> <span class="pl-k">=&gt;</span> <span class="pl-c1">array</span>(</span>
+<span class="pl-s1">                <span class="pl-s"><span class="pl-pds">'</span>type<span class="pl-pds">'</span></span> <span class="pl-k">=&gt;</span> <span class="pl-s"><span class="pl-pds">'</span>string<span class="pl-pds">'</span></span>,</span>
+<span class="pl-s1">                <span class="pl-s"><span class="pl-pds">'</span>maxLength<span class="pl-pds">'</span></span> <span class="pl-k">=&gt;</span> <span class="pl-s"><span class="pl-pds">'</span>60<span class="pl-pds">'</span></span>,</span>
+<span class="pl-s1">                <span class="pl-s"><span class="pl-pds">'</span>required<span class="pl-pds">'</span></span> <span class="pl-k">=&gt;</span> <span class="pl-c1">true</span></span>
+<span class="pl-s1">            )</span>
+<span class="pl-s1">        );</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">        <span class="pl-k">parent</span><span class="pl-k">::</span>__construct(<span class="pl-smi">$article</span>, <span class="pl-smi">$fields</span>);</span>
+<span class="pl-s1">    }</span>
+<span class="pl-s1">}</span></pre></div>
+
+<p>It's depending on the Request-&gt;getData method so you should implement the RequestInterface in your handling of request data (method, data, query, etc).</p>
+
+<div class="highlight highlight-php"><pre><span class="pl-s1"><span class="pl-k">&lt;</span>?<span class="pl-c1">php</span> <span class="pl-c">// src/Net/Request.php</span></span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-k">namespace</span> <span class="pl-en">Acme\Net</span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">Jimlei\FormHandler\RequestInterface</span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-c">/**</span></span>
+<span class="pl-s1"><span class="pl-c"> * Maps a request to usable data.</span></span>
+<span class="pl-s1"><span class="pl-c"> */</span></span>
+<span class="pl-s1"><span class="pl-k">class</span> <span class="pl-en">Request</span> <span class="pl-k">implements</span> <span class="pl-e">RequestInterface</span></span>
+<span class="pl-s1">{</span>
+<span class="pl-s1">    <span class="pl-k">private</span> <span class="pl-smi">$data</span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-k">public</span> <span class="pl-k">function</span> <span class="pl-c1">__construct</span>()</span>
+<span class="pl-s1">    {</span>
+<span class="pl-s1">        <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">data</span> <span class="pl-k">=</span> <span class="pl-c1">json_decode</span>(<span class="pl-c1">file_get_contents</span>(<span class="pl-s"><span class="pl-pds">'</span>php://input<span class="pl-pds">'</span></span>)) ?: <span class="pl-c1">array</span>();</span>
+<span class="pl-s1">    }</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-k">public</span> <span class="pl-k">function</span> <span class="pl-en">getData</span>()</span>
+<span class="pl-s1">    {</span>
+<span class="pl-s1">        <span class="pl-k">return</span> <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">data</span>;</span>
+<span class="pl-s1">    }</span>
+<span class="pl-s1">}</span></pre></div>
+
+<p>Bring it together</p>
+
+<div class="highlight highlight-php"><pre><span class="pl-s1"><span class="pl-k">&lt;</span>?<span class="pl-c1">php</span> <span class="pl-c">// index.php</span></span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">Acme\Entity\Article</span>;</span>
+<span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">Acme\Form\ArticleForm</span>;</span>
+<span class="pl-s1"><span class="pl-k">use</span> <span class="pl-c1">Acme\Net\Request</span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-k">require</span> <span class="pl-s"><span class="pl-pds">'</span>vendor/autoload.php<span class="pl-pds">'</span></span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$request</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-c1">Request</span>();</span>
+<span class="pl-s1"><span class="pl-smi">$article</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-c1">Article</span>();</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$form</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-c1">ArticleForm</span>(<span class="pl-smi">$article</span>);</span>
+<span class="pl-s1"><span class="pl-smi">$form</span><span class="pl-k">-&gt;</span>handleRequest(<span class="pl-smi">$request</span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-k">if</span> (<span class="pl-smi">$form</span><span class="pl-k">-&gt;</span>isValid())</span>
+<span class="pl-s1">{</span>
+<span class="pl-s1">    <span class="pl-c">// save article...</span></span>
+<span class="pl-s1">}</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-c">// do something with the errors</span></span>
+<span class="pl-s1"><span class="pl-k">foreach</span> (<span class="pl-smi">$form</span><span class="pl-k">-&gt;</span>getErrors() <span class="pl-k">as</span> <span class="pl-smi">$error</span>)</span>
+<span class="pl-s1">{</span>
+<span class="pl-s1">  <span class="pl-c">// log, add to flash message, display otherwise, etc.</span></span>
+<span class="pl-s1">}</span></pre></div>
+
+<p>You can do curl requests to test it out. Play around with passing parameters, change the form field types/require/length, etc and see validation and errors change.</p>
+
+<pre><code>curl --data '{"title":"foo"}' localhost
+</code></pre>
+
+<h4>
+<a id="available-types" class="anchor" href="#available-types" aria-hidden="true"><span class="octicon octicon-link"></span></a>Available types</h4>
+
+<ul>
+<li>bool</li>
+<li><del>date</del></li>
+<li><del>datetime</del></li>
+<li>email</li>
+<li>float</li>
+<li>int</li>
+<li>ip</li>
+<li>string</li>
+<li><del>time</del></li>
+<li>timestamp</li>
+<li>url</li>
+</ul>
+
+<h4>
+<a id="available-validations" class="anchor" href="#available-validations" aria-hidden="true"><span class="octicon octicon-link"></span></a>Available validations</h4>
+
+<ul>
+<li>required (bool)</li>
+<li>min (int)</li>
+<li>max (int)</li>
+<li>minLength (int)</li>
+<li>maxLength (int)</li>
+</ul>
+
+<h2>
+<a id="run-tests" class="anchor" href="#run-tests" aria-hidden="true"><span class="octicon octicon-link"></span></a>Run tests</h2>
+
+<pre><code>$ vendor/bin/phpunit
+</code></pre>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/jimlei/formhandler">Formhandler</a> is maintained by <a href="https://github.com/jimlei">jimlei</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>
+
