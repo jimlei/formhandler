@@ -1,64 +1,51 @@
-### INSTALLATION INSTRUCTIONS
-#### Pre-alpha
+## INSTALLATION INSTRUCTIONS
 
-Include the Formhandler
+Include with composer
 
 ```
 composer require jimlei/formhandler:dev-master
 ```
 
-Create an object/entity that will be modified by a form (request)
+Create the object/entity that will be modified by the form (request)
 
 ```php
-<?php
+<?php // src/Entity/Article.php
 
 namespace Acme\Entity;
 
 class Article
 {
-  private $id;
-  private $title;
-  private $text;
+    private $id;
+    private $title;
 
-  public function getId()
-  {
-    return $this->id;
-  }
+    public function getId()
+    {
+        return $this->id;
+    }
 
-  public function setId($id)
-  {
-    $this->id = $id;
-    return $this;
-  }
+    public function setId($id)
+    {
+        $this->id = $id;
+        return $this;
+    }
 
-  public function getTitle()
-  {
-    return $this->title;
-  }
+    public function getTitle()
+    {
+        return $this->title;
+    }
 
-  public function setTitle($title)
-  {
-    $this->title = $title;
-    return $this;
-  }
-
-  public function getText()
-  {
-    return $this->text;
-  }
-
-  public function setText($text)
-  {
-    $this->text = $text;
-    return $this;
-  }
+    public function setTitle($title)
+    {
+        $this->title = $title;
+        return $this;
+    }
 }
 ```
 
-Then you need a form that will map/validate the data in the request
+Create the form that will map/validate the data in the request
 
 ```php
-<?php
+<?php // src/Form/ArticleForm.php
 
 namespace Acme\Form;
 
@@ -67,37 +54,57 @@ use Jimlei\FormHandler\Form;
 
 class ArticleForm extends Form
 {
-  public function __construct(Article $article)
-  {
-    $fields = array(
-      'title' => array(
-        'type' => 'string',
-        'maxLength' => '60',
-        'required' => true
-      ),
-      'text' => array(
-        'type' => 'string',
-        'maxLength' => '5000',
-        'required' => true
-      ),
-      'publishDate' => array(
-        'type' => 'datetime',
-      )
-    );
+    public function __construct(Article $article)
+    {
+        $fields = array(
+            'title' => array(
+                'type' => 'string',
+                'maxLength' => '60',
+                'required' => true
+            )
+        );
 
-    parent::__construct($article, $fields);
-  }
+        parent::__construct($article, $fields);
+    }
 }
 ```
 
-Piecing it together
+It's depending on the Request->getData method so you should implement the RequestInterface in your handling of request data (method, data, query, etc).
 
 ```php
-<?php
+<?php // src/Net/Request.php
+
+namespace Acme\Net;
+
+use Jimlei\FormHandler\RequestInterface;
+
+/**
+ * Maps a request to usable data.
+ */
+class Request implements RequestInterface
+{
+    private $data;
+
+    public function __construct()
+    {
+        $this->data = json_decode(file_get_contents('php://input')) ?: array();
+    }
+    
+    public function getData()
+    {
+        return $this->data;
+    }
+}
+```
+
+Bring it together
+
+```php
+<?php // index.php
 
 use Acme\Entity\Article;
 use Acme\Form\ArticleForm;
-use Jimlei\FormHandler\Request;
+use Acme\Net\Request;
 
 require 'vendor/autoload.php';
 
@@ -115,23 +122,35 @@ if ($form->isValid())
 // do something with the errors
 foreach ($form->getErrors() as $error)
 {
-  $this->flash('danger', $error);
+  // log, add to flash message, display otherwise, etc.
 }
 ```
 
-#### Types
+You can do curl requests to test it out. Play around with passing parameters, change the form field types/require/length, etc and see validation and errors change.
 
-* string
+```
+curl --data '{"title":"foo"}' localhost
+```
+
+#### Available types
+
 * int
-* float
-* time
-* date
-* datetime
+* string
+* email
+* ~~float~~
+* ~~time~~
+* ~~date~~
+* ~~datetime~~
 
-#### Validations
+#### Available validations
 
 * required (bool)
-* min (int)
-* max (int)
-* minLength (int)
+* ~~min (int)~~
+* ~~max (int)~~
+* ~~minLength (int)~~
 * maxLength (int)
+
+## Run tests
+```
+$ vendor/bin/phpunit
+```
