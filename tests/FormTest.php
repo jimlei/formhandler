@@ -140,7 +140,10 @@ class FormTest extends \PHPUnit_Framework_TestCase
     public function validDataProvider()
     {
         return array(
-            array(array('name' => 'Lorem ipsum'))
+            array(array('name' => 'Lorem ipsum')),
+            array(array('name' => 'Lorem ipsum', 'email' => 'test@local.com', 'homepage' => 'https://github.com/jimlei/formhandler', 'cylinders' => 8, 'power' => 525.03, 'productionStart' => 1399413600, 'active' => 1, 'createdBy' => '127.0.0.1')),
+            array(array('name' => 'Lorem ipsum', 'email' => 'test@local.com', 'homepage' => 'https://github.com/jimlei/formhandler', 'cylinders' => '8', 'power' => '525', 'productionStart' => '1399413600', 'active' => '1', 'createdBy' => '69.50.225.155')),
+            array(array('name' => 'Lorem ipsum', 'email' => 'test@local.com', 'homepage' => 'https://github.com/jimlei/formhandler', 'cylinders' => '8', 'power' => '525.03', 'productionStart' => '1399413600', 'active' => '1', 'createdBy' => '192.237.215.35'))
         );
     }
 
@@ -150,7 +153,19 @@ class FormTest extends \PHPUnit_Framework_TestCase
             array(array()),
             array(array('name' => '')),
             array(array('name' => 'Lo')),
-            array(array('name' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit aene,'))
+            array(array('name' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit aene,')),
+            array(array('name' => 'Lorem ipsum', 'email' => '')),
+            array(array('name' => 'Lorem ipsum', 'email' => 'invalidEmail')),
+            array(array('name' => 'Lorem ipsum', 'homepage' => 'invalidUrl')),
+            array(array('name' => 'Lorem ipsum', 'cylinders' => 'invalidCylinders')),
+            array(array('name' => 'Lorem ipsum', 'cylinders' => 0)),
+            array(array('name' => 'Lorem ipsum', 'cylinders' => 100)),
+            array(array('name' => 'Lorem ipsum', 'power' => 'invalidPower')),
+            array(array('name' => 'Lorem ipsum', 'power' => -1)),
+            array(array('name' => 'Lorem ipsum', 'productionStart' => 'invalidProductionStart')),
+            array(array('name' => 'Lorem ipsum', 'active' => 'invalidActive')),
+            array(array('name' => 'Lorem ipsum', 'createdBy' => 'invalidIp')),
+            array(array('name' => 'Lorem ipsum', 'createdBy' => 0)),
         );
     }
 }

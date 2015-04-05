@@ -6,9 +6,11 @@ class TestEntity
 {
     private $id;
     private $name;
+    private $email;
     private $cylinders;
     private $power;
     private $productionStart;
+    private $active;
 
     public function getId()
     {
@@ -29,6 +31,17 @@ class TestEntity
     public function setName($name)
     {
         $this->name = $name;
+        return $this;
+    }
+
+    public function getEmail()
+    {
+        return $this->email;
+    }
+
+    public function setEmail($email)
+    {
+        $this->email = $email;
         return $this;
     }
 
@@ -62,6 +75,17 @@ class TestEntity
     public function setProductionStart($productionStart)
     {
         $this->productionStart = $productionStart;
+        return $this;
+    }
+
+    public function getActive()
+    {
+        return $this->active;
+    }
+
+    public function setActive($active)
+    {
+        $this->active = $active;
         return $this;
     }
 }

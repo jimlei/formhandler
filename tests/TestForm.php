@@ -15,9 +15,16 @@ class TestForm extends Form
                 'maxLength' => 60,
                 'required' => true
             ),
+            'email' => array(
+                'type' => 'email'
+            ),
+            'homepage' => array(
+                'type' => 'url'
+            ),
             'cylinders' => array(
                 'type' => 'int',
-                'min' => 1
+                'min' => 1,
+                'max' => 16
             ),
             'power' => array(
                 'type' => 'float',
@@ -25,6 +32,12 @@ class TestForm extends Form
             ),
             'productionStart' => array(
                 'type' => 'timestamp'
+            ),
+            'active' => array(
+                'type' => 'bool'
+            ),
+            'createdBy' => array(
+                'type' => 'ip'
             )
         );
 

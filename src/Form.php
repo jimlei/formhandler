@@ -176,7 +176,7 @@ abstract class Form
      */
     private function validateField($field, $requirements)
     {
-        if (empty($this->data[$field]))
+        if (!isset($this->data[$field]))
         {
             // This field was not submitted, check if it's required
             if (isset($requirements['required']) && $requirements['required'])
@@ -195,6 +195,20 @@ abstract class Form
                     $this->errors[$field][] = 'Invalid type, should be ' . $value;
                 }
             }
+            else if ($requirement === 'min')
+            {
+                if (!$this->validateFieldMin($field, $value))
+                {
+                    $this->errors[$field][] = 'Invalid field, should be larger than or equal to ' . $value;
+                }
+            }
+            else if ($requirement === 'max')
+            {
+                if (!$this->validateFieldMax($field, $value))
+                {
+                    $this->errors[$field][] = 'Invalid field, should be less than or equal to ' . $value;
+                }
+            }
             else if ($requirement === 'minLength')
             {
                 if (!$this->validateFieldMinLength($field, $value))
@@ -210,6 +224,28 @@ abstract class Form
                 }
             }
         }
+    }
+
+    /**
+     * @param string $field
+     * @param int    $length
+     * @return bool
+     */
+    private function validateFieldMin($field, $value)
+    {
+        return $this->data[$field] >= $value;
+
+    }
+
+    /**
+     * @param string $field
+     * @param int    $length
+     * @return bool
+     */
+    private function validateFieldMax($field, $value)
+    {
+        return $this->data[$field] <= $value;
+
     }
 
     /**
@@ -241,21 +277,24 @@ abstract class Form
      */
     private function validateFieldType($field, $type)
     {
-        if ($type === 'int' && $this->data[$field] == (int) $this->data[$field])
+        if ($type === 'bool')
         {
-            return false;
+            // make it play nice with FILTER_VALIDATE
+            $type = 'boolean';
         }
-        else if ($type === 'email' && !filter_var($this->data[$field], FILTER_VALIDATE_EMAIL))
+
+        if (in_array($type, array('float', 'boolean', 'email', 'int', 'ip', 'url')))
         {
-            return false;
+            return filter_var($this->data[$field], constant('FILTER_VALIDATE_' . strtoupper($type)));
         }
         else if ($type === 'timestamp')
         {
-            $stamp = $this->data[$field];
-            return ((string) (int) $stamp) === $stamp && ($stamp <= PHP_INT_MAX) && ($stamp >= ~PHP_INT_MAX);
+            return is_numeric($this->data[$field])
+                   && ($this->data[$field] <= PHP_INT_MAX)
+                   && ($this->data[$field] >= ~PHP_INT_MAX);
         }
 
-        // todo throw error on invalid field (?)
+        // todo throw error on invalid type (?)
         return true;
     }
 }

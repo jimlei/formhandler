@@ -133,21 +133,24 @@ curl --data '{"title":"foo"}' localhost
 ```
 
 #### Available types
-
-* int
-* string
-* email
-* ~~float~~
-* ~~time~~
+* bool
 * ~~date~~
 * ~~datetime~~
+* email
+* float
+* int
+* ip
+* string
+* ~~time~~
+* timestamp
+* url
 
 #### Available validations
 
 * required (bool)
-* ~~min (int)~~
-* ~~max (int)~~
-* ~~minLength (int)~~
+* min (int)
+* max (int)
+* minLength (int)
 * maxLength (int)
 
 ## Run tests
