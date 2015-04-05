@@ -61,14 +61,6 @@ class ArticleForm extends Form
                 'type' => 'string',
                 'maxLength' => '60',
                 'required' => true
-            ),
-            'text' => array(
-                'type' => 'string',
-                'maxLength' => '5000',
-                'required' => true
-            ),
-            'publishDate' => array(
-                'type' => 'datetime'
             )
         );
 
@@ -136,8 +128,9 @@ foreach ($form->getErrors() as $error)
 
 #### Available types
 
-* string
 * int
+* string
+* email
 * ~~float~~
 * ~~time~~
 * ~~date~~
