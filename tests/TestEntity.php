@@ -5,8 +5,10 @@ namespace Jimlei\FormHandler\Tests;
 class TestEntity
 {
     private $id;
-    private $title;
-    private $text;
+    private $name;
+    private $cylinders;
+    private $power;
+    private $productionStart;
 
     public function getId()
     {
@@ -19,25 +21,47 @@ class TestEntity
         return $this;
     }
 
-    public function getTitle()
+    public function getName()
     {
-        return $this->title;
+        return $this->name;
     }
 
-    public function setTitle($title)
+    public function setName($name)
     {
-        $this->title = $title;
+        $this->name = $name;
         return $this;
     }
 
-    public function getText()
+    public function getCylinders()
     {
-        return $this->text;
+        return $this->cylinders;
     }
 
-    public function setText($text)
+    public function setCylinders($cylinders)
     {
-        $this->text = $text;
+        $this->cylinders = $cylinders;
+        return $this;
+    }
+
+    public function getPower()
+    {
+        return $this->power;
+    }
+
+    public function setPower($power)
+    {
+        $this->power = $power;
+        return $this;
+    }
+
+    public function getProductionStart()
+    {
+        return $this->productionStart;
+    }
+
+    public function setProductionStart($productionStart)
+    {
+        $this->productionStart = $productionStart;
         return $this;
     }
 }

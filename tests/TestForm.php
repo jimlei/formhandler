@@ -9,18 +9,22 @@ class TestForm extends Form
     public function __construct(TestEntity $entity)
     {
         $fields = array(
-            'title' => array(
+            'name' => array(
                 'type' => 'string',
-                'maxLength' => '60',
+                'minLength' => 3,
+                'maxLength' => 60,
                 'required' => true
             ),
-            'text' => array(
-                'type' => 'string',
-                'maxLength' => '5000',
-                'required' => true
+            'cylinders' => array(
+                'type' => 'int',
+                'min' => 1
             ),
-            'publishDate' => array(
-                'type' => 'datetime',
+            'power' => array(
+                'type' => 'float',
+                'min' => 0
+            ),
+            'productionStart' => array(
+                'type' => 'timestamp'
             )
         );
 

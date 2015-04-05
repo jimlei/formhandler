@@ -195,6 +195,13 @@ abstract class Form
                     $this->errors[$field][] = 'Invalid type, should be ' . $value;
                 }
             }
+            else if ($requirement === 'minLength')
+            {
+                if (!$this->validateFieldMinLength($field, $value))
+                {
+                    $this->errors[$field][] = 'Invalid field length, should be longer than or equal to ' . $value;
+                }
+            }
             else if ($requirement === 'maxLength')
             {
                 if (!$this->validateFieldMaxLength($field, $value))
@@ -203,6 +210,17 @@ abstract class Form
                 }
             }
         }
+    }
+
+    /**
+     * @param string $field
+     * @param int    $length
+     * @return bool
+     */
+    private function validateFieldMinLength($field, $length)
+    {
+        return strlen($this->data[$field]) >= $length;
+
     }
 
     /**
@@ -230,6 +248,11 @@ abstract class Form
         else if ($type === 'email' && !filter_var($this->data[$field], FILTER_VALIDATE_EMAIL))
         {
             return false;
+        }
+        else if ($type === 'timestamp')
+        {
+            $stamp = $this->data[$field];
+            return ((string) (int) $stamp) === $stamp && ($stamp <= PHP_INT_MAX) && ($stamp >= ~PHP_INT_MAX);
         }
 
         // todo throw error on invalid field (?)

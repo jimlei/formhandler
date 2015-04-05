@@ -4,13 +4,24 @@ namespace Jimlei\FormHandler\Tests;
 
 class FormTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @var TestEntity
+     */
     private $entity;
+
+    /**
+     * @var TestForm
+     */
     private $form;
+
+    /**
+     * @var TestRequest
+     */
     private $request;
 
     public function setUp()
     {
-        $this->request = new Request();
+        $this->request = new TestRequest();
         $this->entity = new TestEntity();
         $this->form = new TestForm($this->entity);
     }
@@ -21,6 +32,7 @@ class FormTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @var array $data
      * @dataProvider validDataProvider
      */
     public function testGetErrorsWithValidData($data)
@@ -32,6 +44,7 @@ class FormTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @var array $data
      * @dataProvider invalidDataProvider
      */
     public function testGetErrorsWithInvalidData($data)
@@ -77,7 +90,8 @@ class FormTest extends \PHPUnit_Framework_TestCase
         $this->request->setData($data);
         $this->form->handleRequest($this->request);
 
-        $this->assertEquals($this->entity->getTitle(), $data['title']);
+        $this->assertTrue($this->form->isValid());
+        $this->assertEquals($this->entity->getName(), $data['name']);
     }
 
     /**
@@ -88,22 +102,75 @@ class FormTest extends \PHPUnit_Framework_TestCase
         $this->request->setData($data);
         $this->form->handleRequest($this->request);
 
-        $this->assertEquals($this->entity->getTitle(), null);
+        $this->assertFalse($this->form->isValid());
+        $this->assertEquals($this->entity->getName(), null);
+    }
+
+    /**
+     * @dataProvider validDataProvider
+     */
+    public function testHandleRequestWithExistingEntityAndValidData($data)
+    {
+        $this->entity
+            ->setName('Initial name');
+        $this->request->setData($data);
+        $this->form->handleRequest($this->request);
+
+        $this->assertTrue($this->form->isValid());
+        $this->assertEquals($this->entity->getName(), $data['name']);
+    }
+
+    /**
+     * @dataProvider invalidDataProvider
+     */
+    public function testHandleRequestWithExistingEntityAndInvalidData($data)
+    {
+        $initialName = 'Initial namn';
+        $this->entity
+            ->setId(1)
+            ->setName($initialName);
+
+        $this->request->setData($data);
+        $this->form->handleRequest($this->request);
+
+        $this->assertFalse($this->form->isValid());
+        $this->assertEquals($this->entity->getName(), $initialName);
     }
 
     public function validDataProvider()
     {
+        $fields = array(
+            'name' => array(
+                'type' => 'string',
+                'minLength' => 3,
+                'maxLength' => 60,
+                'required' => true
+            ),
+            'cylinders' => array(
+                'type' => 'int',
+                'min' => 1
+            ),
+            'power' => array(
+                'type' => 'float',
+                'min' => 0
+            ),
+            'productionStart' => array(
+                'type' => 'timestamp'
+            )
+        );
+
         return array(
-            array(array('title' => 'a', 'text' => 'b')),
-            array(array('title' => 'Lorem ipsum', 'text' => 'Curabitur congue eros turpis, non dapibus dolor molestie non. Integer arcu mauris, mattis non ullamcorper sed, viverra vitae tellus.')),
+            array(array('name' => 'Lorem ipsum'))
         );
     }
 
     public function invalidDataProvider()
     {
         return array(
-            array(array('title' => '', '')),
-            array(array('title' => 'Lorem ipsum curabitur congue eros turpis, non dapibus dolor molestie non.', 'text' => 'b')),
+            array(array()),
+            array(array('name' => '')),
+            array(array('name' => 'Lo')),
+            array(array('name' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit aene,'))
         );
     }
 }

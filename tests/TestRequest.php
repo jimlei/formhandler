@@ -4,7 +4,7 @@ namespace Jimlei\FormHandler\Tests;
 
 use Jimlei\FormHandler\RequestInterface;
 
-class Request implements RequestInterface
+class TestRequest implements RequestInterface
 {
     private $data;
 
