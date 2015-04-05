@@ -139,26 +139,6 @@ class FormTest extends \PHPUnit_Framework_TestCase
 
     public function validDataProvider()
     {
-        $fields = array(
-            'name' => array(
-                'type' => 'string',
-                'minLength' => 3,
-                'maxLength' => 60,
-                'required' => true
-            ),
-            'cylinders' => array(
-                'type' => 'int',
-                'min' => 1
-            ),
-            'power' => array(
-                'type' => 'float',
-                'min' => 0
-            ),
-            'productionStart' => array(
-                'type' => 'timestamp'
-            )
-        );
-
         return array(
             array(array('name' => 'Lorem ipsum'))
         );
