@@ -108,7 +108,7 @@ class Request implements RequestInterface
 Bring it together
 
 ```php
-<?php
+<?php // index.php
 
 use Acme\Entity\Article;
 use Acme\Form\ArticleForm;
@@ -141,7 +141,7 @@ foreach ($form->getErrors() as $error)
 * ~~float~~
 * ~~time~~
 * ~~date~~
-* ~~datetime~~~~
+* ~~datetime~~
 
 #### Available validations
 
