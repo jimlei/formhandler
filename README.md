@@ -87,7 +87,7 @@ class Request implements RequestInterface
 
     public function __construct()
     {
-        $this->data = json_decode(file_get_contents('php://input'));
+        $this->data = json_decode(file_get_contents('php://input')) ?: array();
     }
     
     public function getData()
@@ -124,6 +124,12 @@ foreach ($form->getErrors() as $error)
 {
   // log, add to flash message, display otherwise, etc.
 }
+```
+
+You can do curl requests to test it out. Play around with passing parameters, change the form field types/require/length, etc and see validation and errors change.
+
+```
+curl --data '{"title":"foo"}' localhost
 ```
 
 #### Available types
