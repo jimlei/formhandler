@@ -90,7 +90,7 @@ abstract class Form
      */
     public function render()
     {
-        $builder = new FormBuilderPlain();
+        $builder = new FormBuilderBootstrap();
         $form = $builder->build($this);
 
         return $form;
@@ -196,7 +196,7 @@ abstract class Form
      */
     private function validateField($field, $requirements)
     {
-        if (!array_key_exists($field, $this->data))
+        if (!array_key_exists($field, $this->data) || $this->data[$field] === '')
         {
             // This field was not submitted, check if it's required
             if (array_key_exists('required', $requirements) && $requirements['required'])

@@ -12,6 +12,7 @@ class FormBuilderPlain implements FormBuilderInterface
         $fields = array();
 
         var_dump($data);
+        var_dump($data);
 
         foreach ($form->getFields() as $name => $field)
         {
