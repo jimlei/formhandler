@@ -2,8 +2,6 @@
 
 namespace Jimlei\FormHandler;
 
-use Jimlei\FormHandler\RequestInterface;
-
 /**
  * Form handler class that maps a request to an entity if the fields are valid
  *
@@ -87,6 +85,28 @@ abstract class Form
     }
 
     /**
+     * Renders form using FormBuilder
+     * @return string
+     */
+    public function render()
+    {
+        $builder = new FormBuilderPlain();
+        $form = $builder->build($this);
+
+        return $form;
+    }
+
+    public function getFields()
+    {
+        return $this->fields;
+    }
+
+    public function getData()
+    {
+        return $this->data;
+    }
+
+    /**
      * @return array
      */
     public function getErrors()
@@ -115,7 +135,7 @@ abstract class Form
             $this->validateField($field, $requirements);
         }
 
-        if (empty($this->errors))
+        if (count($this->errors) === 0)
         {
             // No errors, lets update the entity
             $this->updateEntity();
@@ -130,7 +150,7 @@ abstract class Form
      */
     public function isValid()
     {
-        return empty($this->errors);
+        return count($this->errors) === 0;
     }
 
     /**
@@ -176,10 +196,10 @@ abstract class Form
      */
     private function validateField($field, $requirements)
     {
-        if (!isset($this->data[$field]))
+        if (!array_key_exists($field, $this->data))
         {
             // This field was not submitted, check if it's required
-            if (isset($requirements['required']) && $requirements['required'])
+            if (array_key_exists('required', $requirements) && $requirements['required'])
             {
                 $this->errors[$field][] = 'Required field missing';
             }
@@ -188,63 +208,48 @@ abstract class Form
 
         foreach ($requirements as $requirement => $value)
         {
-            if ($requirement === 'type')
+            if ($requirement === 'type' && !$this->validateFieldType($field, $value))
             {
-                if (!$this->validateFieldType($field, $value))
-                {
-                    $this->errors[$field][] = 'Invalid type, should be ' . $value;
-                }
+                $this->errors[$field][] = 'Invalid type, should be ' . $value;
             }
-            else if ($requirement === 'min')
+            elseif ($requirement === 'min' && !$this->validateFieldMin($field, $value))
             {
-                if (!$this->validateFieldMin($field, $value))
-                {
-                    $this->errors[$field][] = 'Invalid field, should be larger than or equal to ' . $value;
-                }
+                $this->errors[$field][] = 'Invalid field, should be larger than or equal to ' . $value;
             }
-            else if ($requirement === 'max')
+            elseif ($requirement === 'max' && !$this->validateFieldMax($field, $value))
             {
-                if (!$this->validateFieldMax($field, $value))
-                {
-                    $this->errors[$field][] = 'Invalid field, should be less than or equal to ' . $value;
-                }
+                $this->errors[$field][] = 'Invalid field, should be less than or equal to ' . $value;
             }
-            else if ($requirement === 'minLength')
+            elseif ($requirement === 'minLength' && !$this->validateFieldMinLength($field, $value))
             {
-                if (!$this->validateFieldMinLength($field, $value))
-                {
-                    $this->errors[$field][] = 'Invalid field length, should be longer than or equal to ' . $value;
-                }
+                $this->errors[$field][] = 'Invalid field length, should be longer than or equal to ' . $value;
             }
-            else if ($requirement === 'maxLength')
+            elseif ($requirement === 'maxLength' && !$this->validateFieldMaxLength($field, $value))
             {
-                if (!$this->validateFieldMaxLength($field, $value))
-                {
-                    $this->errors[$field][] = 'Invalid field length, should be less than or equal to ' . $value;
-                }
+                $this->errors[$field][] = 'Invalid field length, should be less than or equal to ' . $value;
             }
         }
     }
 
     /**
      * @param string $field
-     * @param int    $length
+     * @param int    $value
      * @return bool
      */
     private function validateFieldMin($field, $value)
     {
-        return $this->data[$field] >= $value;
+        return (int) $this->data[$field] >= $value;
 
     }
 
     /**
      * @param string $field
-     * @param int    $length
+     * @param int    $value
      * @return bool
      */
     private function validateFieldMax($field, $value)
     {
-        return $this->data[$field] <= $value;
+        return (int) $this->data[$field] <= $value;
 
     }
 
@@ -277,21 +282,24 @@ abstract class Form
      */
     private function validateFieldType($field, $type)
     {
-        if ($type === 'bool')
+        if ($this->data[$field] !== '')
         {
-            // make it play nice with FILTER_VALIDATE
-            $type = 'boolean';
-        }
+            if ($type === 'bool')
+            {
+                // make it play nice with FILTER_VALIDATE
+                $type = 'boolean';
+            }
 
-        if (in_array($type, array('float', 'boolean', 'email', 'int', 'ip', 'url')))
-        {
-            return filter_var($this->data[$field], constant('FILTER_VALIDATE_' . strtoupper($type)));
-        }
-        else if ($type === 'timestamp')
-        {
-            return is_numeric($this->data[$field])
-                   && ($this->data[$field] <= PHP_INT_MAX)
-                   && ($this->data[$field] >= ~PHP_INT_MAX);
+            if (in_array($type, array('float', 'boolean', 'email', 'int', 'ip', 'url'), true))
+            {
+                return filter_var($this->data[$field], constant('FILTER_VALIDATE_' . strtoupper($type)));
+            }
+            elseif ($type === 'timestamp')
+            {
+                return is_numeric($this->data[$field])
+                && ($this->data[$field] <= PHP_INT_MAX)
+                && ($this->data[$field] >= ~PHP_INT_MAX);
+            }
         }
 
         // todo throw error on invalid type (?)

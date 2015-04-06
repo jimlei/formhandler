@@ -78,9 +78,6 @@ namespace Acme\Net;
 
 use Jimlei\FormHandler\RequestInterface;
 
-/**
- * Maps a request to usable data.
- */
 class Request implements RequestInterface
 {
     private $data;

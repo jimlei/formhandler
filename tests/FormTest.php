@@ -26,6 +26,11 @@ class FormTest extends \PHPUnit_Framework_TestCase
         $this->form = new TestForm($this->entity);
     }
 
+    public function tearDown()
+    {
+        unset($this->form);
+    }
+
     public function testGetErrorsBeforeRequest()
     {
         $this->assertEmpty($this->form->getErrors());
