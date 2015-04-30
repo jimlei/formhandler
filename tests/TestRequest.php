@@ -6,9 +6,12 @@ use Jimlei\FormHandler\RequestInterface;
 
 class TestRequest implements RequestInterface
 {
+    /**
+     * @var array
+     */
     private $data;
 
-    public function __construct($data = null)
+    public function __construct($data = array())
     {
         $this->data = $data;
     }
